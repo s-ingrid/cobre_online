@@ -1,0 +1,12 @@
+body {
+    background: linear-gradient(90deg, hsla(231, 48%, 48%, 1) 0%, hsla(211, 36%, 46%, 1) 100%);
+}
+.btn-login {
+    background: #5D7DD4;
+}
+.btn-login:hover{
+    background: #4963C7;
+}
+.cb1 {
+    background-color: rgba(255, 255, 255, 0.1);
+}
