@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('estado', function (Blueprint $table) {
-            $table->id('estado_id');
+            $table->char('estado_id', 2)->primary();
             $table->string('est_nome', 72)->nullable();
             $table->timestamp('excluido')->nullable();
             $table->index('estado_id', 'idx_1')->using('BTREE');

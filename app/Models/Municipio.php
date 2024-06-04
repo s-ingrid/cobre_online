@@ -25,4 +25,8 @@ class Municipio extends Model
     {
         return $this->hasMany(Cliente::class, 'municipio_id', 'municipio_id');
     }
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
+    }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cliente', function (Blueprint $table) {
             $table->id('cliente_id');
-            $table->unsignedBigInteger('estado_id')->unsigned()->nullable();
+            $table->char('estado_id', 2)->nullable();
             $table->unsignedBigInteger('municipio_id')->unsigned()->nullable();
             $table->string('cli_empresa', 255)->nullable();
             $table->string('cli_nome_fantasia', 255)->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->char('cli_cep', 9)->nullable();
             $table->string('cli_endereco', 255)->nullable();
             $table->string('cli_numero', 20)->nullable();
-            $table->string('cli_bairro', 255)->default('Centro');
+            $table->string('cli_bairro', 255)->nullable()->default('Centro');
             $table->string('cli_complemento', 255)->nullable();
             $table->string('cli_telefone', 100)->nullable();
             $table->string('cli_celular', 15)->nullable();

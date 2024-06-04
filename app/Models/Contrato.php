@@ -11,6 +11,7 @@ class Contrato extends Model
 
     protected $table = 'contrato';
     protected $primaryKey = 'contrato_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'licenciada_id',
@@ -49,9 +50,6 @@ class Contrato extends Model
         'ctr_data_cadastro',
         'ctr_emitir_nfse_antes_quitacao',
         'lancamento_categoria_id',
-        'cadastrado',
-        'atualizado',
-        'excluido',
         'ctr_tolerancia',
         'ctr_sku',
         'ctr_enviar_cobranca_wpp',

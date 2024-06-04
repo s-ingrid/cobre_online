@@ -11,6 +11,7 @@ class Cliente extends Model
 
     protected $table = 'cliente';
     protected $primaryKey = 'cliente_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'estado_id',
@@ -37,10 +38,7 @@ class Cliente extends Model
         'cli_email_corporativo',
         'cli_buyer_id',
         'cli_inscricao_municipal',
-        'cli_sku',
-        'cadastrado',
-        'atualizado',
-        'excluido',
+        'cli_sku'
     ];
 
     public function municipio()

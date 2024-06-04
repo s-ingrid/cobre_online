@@ -10,8 +10,11 @@ class Estado extends Model
     protected $table = 'estado';
     protected $primaryKey = 'estado_id';
     public $incrementing = false;
+    public $keyType = 'char';
+    public $timestamps = false;
 
     protected $fillable = [
+        'estado_id',
         'est_nome',
         'excluido',
     ];

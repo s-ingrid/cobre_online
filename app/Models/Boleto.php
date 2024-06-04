@@ -11,6 +11,7 @@ class Boleto extends Model
 
     protected $table = 'boleto';
     protected $primaryKey = 'boleto_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'contrato_id',
