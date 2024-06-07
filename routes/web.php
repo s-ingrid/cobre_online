@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ContratoController;
-use App\Http\Controllers\EstadosController;
 use App\Http\Controllers\MunicipiosController;
 
 Route::view('/register', 'auth.register')->name('register');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Estado;
+use App\Models\Municipio;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 
@@ -21,7 +23,8 @@ class ClienteController extends Controller
 
     public function create(Request $request)
     {
-        return view('cliente.cliente_create');
+        $estados = Estado::all();
+        return view('cliente.cliente_create', ['estados'=> $estados]);
     }
 
     public function store(Request $request)
@@ -91,7 +94,13 @@ class ClienteController extends Controller
     public function edit(string $id)
     {
         $cliente = $this->cliente->find($id);
-        return view('cliente.cliente_update', ['cliente' => $cliente]);
+        $estados = Estado::all();
+        $municipios = Municipio::all();
+        return view('cliente.cliente_update', [
+            'cliente' => $cliente,
+            'estados' => $estados,
+            'municipios'=> $municipios
+        ]);
     }
 
 

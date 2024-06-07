@@ -48,38 +48,17 @@
             <div class="mb-3">
                 <select id="estado" name="estado_id" onchange="buscarMunicipios(this.value)" value="{{ $cliente->estado_id }}" class="form-select">
                     <option disabled selected>Selecionar estado</option>
-                    <option value="AC">Acre</option>
-                    <option value="AL">Alagoas</option>
-                    <option value="AP">Amapá</option>
-                    <option value="AM">Amazonas</option>
-                    <option value="BA">Bahia</option>
-                    <option value="CE">Ceará</option>
-                    <option value="DF">Distrito Federal</option>
-                    <option value="ES">Espírito Santo</option>
-                    <option value="GO">Goiás</option>
-                    <option value="MA">Maranhão</option>
-                    <option value="MT">Mato Grosso</option>
-                    <option value="MS">Mato Grosso do Sul</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="PA">Pará</option>
-                    <option value="PB">Paraíba</option>
-                    <option value="PR">Paraná</option>
-                    <option value="PE">Pernambuco</option>
-                    <option value="PI">Piauí</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="RN">Rio Grande do Norte</option>
-                    <option value="RS">Rio Grande do Sul</option>
-                    <option value="RO">Rondônia</option>
-                    <option value="RR">Roraima</option>
-                    <option value="SC">Santa Catarina</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="SE">Sergipe</option>
-                    <option value="TO">Tocantins</option>
+                    @foreach ($estados as $estado)
+                        <option value="{{ $estado->estado_id }}" {{ $estado->estado_id == $cliente->estado_id ? 'selected' : '' }}>{{ $estado->est_nome }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="mb-3">
                 <select id="municipio" name="municipio_id" value="{{ $cliente->municipio_id }}" class="form-select">
-                    <option disabled selected>Selecione primeiro o estado</option>
+                    <option disabled selected>Selecione...</option>
+                    @foreach ($municipios as $municipio)
+                        <option value="{{ $municipio->municipio_id }}" {{ $municipio->municipio_id == $cliente->municipio_id ? 'selected' : '' }}>{{ $municipio->mun_nome }}</option>
+                    @endforeach
                 </select>
             </div>
             Informações complementares

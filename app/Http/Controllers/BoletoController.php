@@ -27,40 +27,69 @@ class BoletoController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'contrato_id' => 'nullable|integer',
+        $request->validate([
+            'contrato_id' => 'required|integer',
             'blt_data_vencimento' => 'required|date',
-            'blt_valor' => 'required|numeric',
-            'blt_valor_pago' => 'nullable|numeric',
-            'blt_taxa' => 'nullable|numeric',
+            'blt_valor' => 'required',
+            'blt_valor_pago' => 'nullable',
+            'blt_taxa' => 'nullable',
             'blt_descricao' => 'nullable|string|max:255',
             'blt_observacao' => 'nullable|string|max:255',
-            'blt_chave' => 'nullable|string|max:50|unique:boletos,blt_chave',
-            'blt_desconto' => 'nullable|numeric',
-            'blt_juros' => 'nullable|numeric',
-            'blt_multa' => 'nullable|numeric',
+            'blt_chave' => 'nullable|string|max:50',
+            'blt_desconto' => 'nullable',
+            'blt_juros' => 'nullable',
+            'blt_multa' => 'nullable',
             'blt_data_pago' => 'nullable|date',
-            'blt_valor_tarifa' => 'nullable|numeric',
-            'blt_qtd_parcelas' => 'nullable|integer',
+            'blt_valor_tarifa' => 'nullable',
+            'blt_qtd_parcelas' => 'required|integer',
             'lote_id' => 'nullable|integer',
-            'blt_registrado' => 'nullable|in:S,N',
+            'blt_registrado' => 'nullable',
             'remessa_id' => 'nullable|integer',
-            'blt_erro_registro' => 'nullable|in:S,N',
+            'blt_erro_registro' => 'nullable',
             'blt_zoop_id' => 'nullable|string|max:100',
             'blt_link' => 'nullable|string|max:255',
             'blt_transacao_id' => 'nullable|string|max:100',
             'blt_transacao_id_pix' => 'nullable|string|max:255',
             'blt_webhook_log' => 'nullable|string',
             'blt_numero_nfse' => 'nullable|string|max:50',
-            'blt_erro_nota' => 'nullable|in:S,N',
+            'blt_erro_nota' => 'nullable',
             'forma_pagamento_id' => 'nullable|integer',
             'blt_vencimento_original' => 'nullable|date',
             'excluido' => 'nullable|date',
             'cadastrado' => 'nullable|date',
-            'atualizado' => 'nullable|date',
+            'atualizado' => 'nullable|date'
         ]);
 
-        $boleto = $this->boleto->create($validated);
+        $boleto = $this->boleto->create([
+            'contrato_id' => $request->contrato_id,
+            'blt_data_vencimento' => $request->blt_data_vencimento,
+            'blt_valor' => $request->blt_valor,
+            'blt_valor_pago' => $request->blt_valor_pago,
+            'blt_taxa' => $request->blt_taxa,
+            'blt_descricao' => $request->blt_descricao,
+            'blt_observacao' => $request->blt_observacao,
+            'blt_chave' => $request->blt_chave,
+            'blt_desconto' => $request->blt_desconto,
+            'blt_juros' => $request->blt_juros,
+            'blt_multa' => $request->blt_multa,
+            'blt_data_pago' => $request->blt_data_pago,
+            'blt_valor_tarifa' => $request->blt_valor_tarifa,
+            'blt_qtd_parcelas' => $request->blt_qtd_parcelas,
+            'lote_id' => $request->lote_id,
+            'blt_registrado' => $request->blt_registrado,
+            'remessa_id' => $request->remessa_id,
+            'blt_erro_registro' => $request->blt_erro_registro,
+            'blt_zoop_id' => $request->blt_zoop_id,
+            'blt_link' => $request->blt_link,
+            'blt_transacao_id' => $request->blt_transacao_id,
+            'blt_transacao_id_pix' => $request->blt_transacao_id_pix,
+            'blt_webhook_log' => $request->blt_webhook_log,
+            'blt_numero_nfse' => $request->blt_numero_nfse,
+            'blt_erro_nota' => $request->blt_erro_nota,
+            'forma_pagamento_id' => $request->forma_pagamento_id,
+            'blt_vencimento_original' => $request->blt_vencimento_original
+        ]);
+        return response()->json($boleto);
     }
 
     public function show(string $id)

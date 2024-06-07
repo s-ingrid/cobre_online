@@ -113,8 +113,5 @@ class ContratoService
         $dataVencimentoInicial = $validated['ctr_data_vencimento'];
 
         $this->boletoService->criarBoletos($contrato, $valorParcela, $numParcelas, $dataVencimentoInicial);
-
-
-        return $contrato
     }
 }

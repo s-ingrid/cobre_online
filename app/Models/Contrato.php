@@ -65,4 +65,12 @@ class Contrato extends Model
     {
         return $this->belongsTo(Cliente::class, 'cliente_id', 'cliente_id');
     }
+    public function nfse()
+    {
+        return $this->belongsTo(Nfse::class, 'nfse_codigo_servico_id', 'nfse_codigo_servico_id');
+    }
+    public function centro_custo()
+    {
+        return $this->belongsTo(Centro_custo::class, 'cliente_id', 'cliente_id');
+    }
 }
