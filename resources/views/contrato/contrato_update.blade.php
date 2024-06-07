@@ -1,14 +1,10 @@
 @extends('auth.layout')
 @section('auth.content')
-<form action="{{ route('contrato.update', ['contrato' => $contrato->cliente_id]) }}" method="POST">
+<form action="{{ route('contrato.update', ['contrato' => $contrato->contrato_id]) }}" method="POST">
     @csrf
     @method('PUT')
     <section class="d-flex justify-content-center">
-
         <div class="card m-5" style="width: 65vw;">
-        <div>
-            {{$contrato}}
-        </div>
             <h2 class="mx-5 mt-5 title-color">Dados da Cobrança</h2>
             <nav class="tipo-cobranca-list my-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -60,7 +56,7 @@
                 <input type="text" placeholder="Valor" name="ctr_valor" value="{{ $contrato->ctr_valor }}" class="form-control moeda">
             </div>
             <div class="mb-3 mx-5">
-                <input type="text" placeholder="Parcelas (boletos)" name="ctr_parcelamento" value="{{ $contrato->ctr_valor }}" class="form-control">
+                <input type="text" placeholder="Parcelas (boletos)" name="ctr_parcelamento" value="{{ $contrato->ctr_parcelamento }}" class="form-control">
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Vencimento" name="ctr_data_vencimento" value="{{ $contrato->ctr_data_vencimento }}" class="form-control">

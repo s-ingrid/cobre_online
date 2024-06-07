@@ -3,9 +3,9 @@
 <section class="d-flex justify-content-center" style="height: 90vh;">
     <div class="card m-5" style="width: 80vw;">
         <div class="d-flex justify-content-between">
-            <span>Contrato</span>
+            <span>Cobranças</span>
             <a href="{{ route('contrato.create') }}">
-                <button class="btn btn-primary" type="submit">NOVO CONTRATO</button>
+                <button class="btn btn-primary" type="submit">EMITIR COBRANÇA</button>
             </a>
         </div>
         <table class="table table-hover">

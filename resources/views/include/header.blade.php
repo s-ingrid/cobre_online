@@ -10,7 +10,7 @@
             <a style="color: white;" class="nav-link active" href="{{ route ('cliente.index') }}">Clientes</a>
         </li>
         <li class="nav-item">
-            <a style="color: white;" class="nav-link" href="/boleto">Boletos</a>
+            <a style="color: white;" class="nav-link" href="{{ route ('boleto.index') }}">Boletos</a>
         </li>
         <li class="nav-item">
             <a style="color: white;" class="nav-link" href="{{ route ('contrato.index') }}">Vendas/Contratos</a>

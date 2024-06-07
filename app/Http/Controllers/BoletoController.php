@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use App\Models\Boleto;
 
@@ -16,8 +17,12 @@ class BoletoController extends Controller
 
     public function index()
     {
-        $boletos = $this->boleto->all();
-        return view('boleto', ['boletos' => $boletos]);
+        $boletos = Boleto::with('contrato.cliente')->get();
+        $clientes = Cliente::all();
+        return view('boleto.boleto', [
+            'boletos' => $boletos,
+            'clientes'=> $clientes
+        ]);
     }
 
     public function create()
@@ -27,6 +32,22 @@ class BoletoController extends Controller
 
     public function store(Request $request)
     {
+       //
+    }
+
+    public function edit(string $id)
+    {
+        $boleto = $this->boleto->with('contrato.cliente')->find($id);
+        return view('boleto.boleto_update', ['boleto' => $boleto]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $boleto = $this->boleto->find($id);
+        if (!$boleto) {
+            return response()->json(['message' => 'Boleto não encontrado'], 404);
+        }
+
         $request->validate([
             'contrato_id' => 'required|integer',
             'blt_data_vencimento' => 'required|date',
@@ -60,7 +81,7 @@ class BoletoController extends Controller
             'atualizado' => 'nullable|date'
         ]);
 
-        $boleto = $this->boleto->create([
+        $this->boleto->create([
             'contrato_id' => $request->contrato_id,
             'blt_data_vencimento' => $request->blt_data_vencimento,
             'blt_valor' => $request->blt_valor,
@@ -92,35 +113,14 @@ class BoletoController extends Controller
         return response()->json($boleto);
     }
 
-    public function show(string $id)
-    {
-        $boleto = Boleto::find($id);
-        if (!$boleto) {
-            return response()->json(['message' => 'Cliente not found'], 404);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $boleto = $this->boleto->find($id);
+        if (!$boleto) {
+            return response()->json(['message' => 'Contrato não encontrado'], 404);
+        }
+
+        $boleto->delete();
+        return redirect()->route('boleto.index')->with('message', 'Deletado com sucesso!');
     }
 }

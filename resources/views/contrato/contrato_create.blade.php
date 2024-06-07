@@ -230,7 +230,7 @@
                 <input class="form-control" placeholder="Renovado em" type="text" name="ctr_data_renovacao">
             </div>
             <div class="my-3 mx-5">
-                <input class="form-control moeda" placeholder="Observação interna" type="text"
+                <input class="form-control" placeholder="Observação interna" type="text"
                     name="ctr_observacao_interna">
             </div>
             <div class="d-flex justify-content-between mx-5 my-3">
