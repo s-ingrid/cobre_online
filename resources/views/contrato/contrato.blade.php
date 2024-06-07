@@ -3,67 +3,69 @@
 <section class="d-flex justify-content-center" style="height: 90vh;">
     <div class="card m-5" style="width: 80vw;">
         <div class="d-flex justify-content-between">
-            <span>Cobranças</span>
+            <h3 class="mx-5 my-4 title-color">Cobranças</h3>
             <a href="{{ route('contrato.create') }}">
-                <button class="btn btn-primary" type="submit">EMITIR COBRANÇA</button>
+                <button class="btn btn-btn-create mx-5 my-4" type="submit">+ EMITIR COBRANÇA</button>
             </a>
         </div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                <th scope="col">Contrato</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Demonstrativo</th>
-                <th scope="col">Periodicidade</th>
-                <th scope="col">Prox. venc.</th>
-                <th scope="col">Ativo</th>
-                <th scope="col">Valor</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($contratos as $contrato)
+        <div class="scrollable-container m-3">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td>
-                            {{ $contrato->contrato_id }}
-                        </td>
-                        <td>
-                            {{ $contrato->cliente_id }}
-                        </td>
-                        <td>
-                            {{ $contrato->ctr_descricao }}
-                        </td>
-                        <td>
-                            {{ $contrato->ctr_periodicidade }}
-                        </td>
-                        <td>
-                            {{ $contrato->ctr_data_renovacao }}
-                        </td>
-                        <td>
-                            {{ $contrato->ctr_ativo }}
-                        </td>
-                        <td>
-                            {{ $contrato->ctr_valor }}
-                        </td>
-                        </td>
-                        <td>
-                            <div class="d-flex">
-                                <a class="btn-logout ml-2" href="{{ route('contrato.edit', ['contrato' => $contrato->contrato_id]) }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('contrato.destroy', ['contrato' => $contrato->contrato_id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-logout delete-btn" type="submit">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                    <th scope="col">Contrato</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Demonstrativo</th>
+                    <th scope="col">Periodicidade</th>
+                    <th scope="col">Prox. venc.</th>
+                    <th scope="col">Ativo</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col"></th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($contratos as $contrato)
+                        <tr>
+                            <td>
+                                {{ $contrato->contrato_id }}
+                            </td>
+                            <td>
+                                {{ $contrato->cliente_id }}
+                            </td>
+                            <td>
+                                {{ $contrato->ctr_descricao }}
+                            </td>
+                            <td>
+                                {{ $contrato->ctr_periodicidade }}
+                            </td>
+                            <td>
+                                {{ $contrato->ctr_data_renovacao }}
+                            </td>
+                            <td>
+                                {{ $contrato->ctr_ativo }}
+                            </td>
+                            <td>
+                                {{ $contrato->ctr_valor }}
+                            </td>
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <a class="btn-logout ml-2" href="{{ route('contrato.edit', ['contrato' => $contrato->contrato_id]) }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('contrato.destroy', ['contrato' => $contrato->contrato_id]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn-logout delete-btn" type="submit">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

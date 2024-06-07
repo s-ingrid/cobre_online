@@ -3,53 +3,55 @@
 <section class="d-flex justify-content-center" style="height: 90vh;">
     <div class="card m-5" style="width: 80vw;">
         <div class="d-flex justify-content-between">
-            <span>Cliente</span>
+            <h3 class="mx-5 my-4 title-color">Cliente</h3>
             <a href="{{ route('cliente.create') }}">
-                <button class="btn btn-primary" type="submit">NOVO CLIENTE</button>
+                <button class="btn btn-btn-create mx-5 my-4" type="submit">NOVO CLIENTE</button>
             </a>
         </div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                <th scope="col">Descrição</th>
-                <th scope="col">Telefones / Celular</th>
-                <th scope="col">Email</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($clientes as $cliente)
+        <div class="scrollable-container m-3">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td>
-                            {{$cliente->cli_empresa}}
-                            @if($cliente->cli_responsavel)
-                                ({{$cliente->cli_responsavel}})
-                            @endif
-                        </td>
-                        <td>{{$cliente->cli_telefone}}
-                            @if($cliente->cli_telefone && $cliente->cli_celular)
-                                <span>/</span>
-                            @endif {{$cliente->cli_celular}}
-                        </td>
-                        <td>{{$cliente->cli_email}}</td>
-                        <td>
-                            <div class="d-flex">
-                                <a class="btn-logout ml-2" href="{{ route('cliente.edit', ['cliente' => $cliente->cliente_id]) }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('cliente.destroy', ['cliente' => $cliente->cliente_id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-logout delete-btn" type="submit">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Telefones / Celular</th>
+                    <th scope="col">Email</th>
+                    <th scope="col"></th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($clientes as $cliente)
+                        <tr>
+                            <td>
+                                {{$cliente->cli_empresa}}
+                                @if($cliente->cli_responsavel)
+                                    ({{$cliente->cli_responsavel}})
+                                @endif
+                            </td>
+                            <td>{{$cliente->cli_telefone}}
+                                @if($cliente->cli_telefone && $cliente->cli_celular)
+                                    <span>/</span>
+                                @endif {{$cliente->cli_celular}}
+                            </td>
+                            <td>{{$cliente->cli_email}}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <a class="btn-logout ml-2" href="{{ route('cliente.edit', ['cliente' => $cliente->cliente_id]) }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('cliente.destroy', ['cliente' => $cliente->cliente_id]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn-logout delete-btn" type="submit">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

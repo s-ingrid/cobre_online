@@ -5,52 +5,55 @@
         <div class="d-flex justify-content-between">
             <h3 class="mx-5 my-4 title-color">Boletos</h3>
             <a href="{{ route('contrato.create') }}">
-                <button class="btn btn-primary mx-5 my-4" type="submit">EMITIR COBRANÇA</button>
+                <button class="btn btn-create mx-5 my-4" type="submit">+ EMITIR COBRANÇA</button>
             </a>
         </div>
-        <table style="width: 75vw;" class="table table-hover m-5">
-            <thead>
-                <tr>
-                <th scope="col">Descrição</th>
-                <th scope="col">Vencimento</th>
-                <th scope="col">Valor</th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($boletos as $boleto)
+        <div class="scrollable-container m-3">
+
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td>
-                            {{ $boleto->boleto_id }}
-                            {{$boleto->contrato->cliente->cli_nome_fantasia}}
-                            @if($boleto->contrato->cliente->cli_responsavel)
-                                ({{$boleto->contrato->cliente->cli_responsavel}})
-                            @endif
-                        </td>
-                        <td>
-                            {{ $boleto->blt_data_vencimento }}
-                        </td>
-                        <td>
-                            {{ $boleto->blt_valor }}
-                        </td>
-                        <td>
-                            <div class="d-flex">
-                                <a class="btn-logout ml-2" href="{{ route('boleto.edit', ['boleto' => $boleto->boleto_id]) }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('boleto.destroy', ['boleto' => $boleto->boleto_id]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-logout delete-btn" type="submit">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Vencimento</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col"></th>
                     </tr>
-                    @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($boletos as $boleto)
+                        <tr>
+                            <td>
+                                {{ $boleto->boleto_id }}
+                                {{$boleto->contrato->cliente->cli_nome_fantasia}}
+                                @if($boleto->contrato->cliente->cli_responsavel)
+                                    ({{$boleto->contrato->cliente->cli_responsavel}})
+                                @endif
+                            </td>
+                            <td>
+                                {{ $boleto->blt_data_vencimento }}
+                            </td>
+                            <td>
+                                {{ $boleto->blt_valor }}
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <a class="btn-logout ml-2" href="{{ route('boleto.edit', ['boleto' => $boleto->boleto_id]) }}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('boleto.destroy', ['boleto' => $boleto->boleto_id]) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn-logout delete-btn" type="submit">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                </tbody>
+            </table>
+        </div>
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
