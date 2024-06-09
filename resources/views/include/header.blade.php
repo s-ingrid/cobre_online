@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, hsla(231, 48%, 48%, 1) 0%, hsla(211, 36%, 46%, 1) 100%); height: 70px;">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/home"><img width="110" class="text-center" src="{{ asset('images/CobreOnline.svg') }}" alt="Logo Cobre Online"></a>
+    <a class="navbar-brand" href="/boleto"><img width="110" class="text-center" src="{{ asset('images/CobreOnline.svg') }}" alt="Logo Cobre Online"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

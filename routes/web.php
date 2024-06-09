@@ -38,12 +38,3 @@ Route::get('/boleto/{boleto}/edit', [BoletoController::class, 'edit'])->name('bo
 Route::put('/boleto/{boleto}', [BoletoController::class, 'update'])->name('boleto.update');
 Route::delete('/boleto/{boleto}', [BoletoController::class, 'destroy'])->name('boleto.destroy');
 
-Route::get('/municipios/{estadoId}', [MunicipiosController::class, 'buscarPorEstado'])->name('municipio.index');
-
-Route::get('/home', function () {
-    return view('home');
-})->middleware('auth')->name('home');
-
-// Route::get('/cliente', function () {
-//     return view('cliente');
-// })->middleware('auth')->name('cliente');

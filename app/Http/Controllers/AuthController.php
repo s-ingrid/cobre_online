@@ -23,7 +23,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('home');
+        return redirect()->route('boleto.index');
     }
 
     public function login(Request $request)
@@ -34,7 +34,7 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->route('home');
+            return redirect()->route('boleto.index');
         }
 
         return back()->withErrors([

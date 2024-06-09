@@ -151,3 +151,30 @@ small {
 .error {
     color: red;
 }
+
+.container-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.left-panel, .right-panel {
+    flex: 1;
+}
+
+.left-panel {
+    background-color: #e4ecf4;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.right-panel {
+    background: transparent url(../images/bg-login.jpg) center top;
+    opacity: 0.6;
+    background-position: center top;
+    background-repeat: no-repeat;
+    height: 100vh;
+}

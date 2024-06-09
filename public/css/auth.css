@@ -3,10 +3,8 @@ body {
 }
 .btn-login {
     background: #5D7DD4;
+    width: 500px;
 }
 .btn-login:hover{
     background: #4963C7;
-}
-.cb1 {
-    background-color: rgba(255, 255, 255, 0.1);
 }
