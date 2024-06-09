@@ -1,11 +1,11 @@
 @extends('auth.layout')
 @section('auth.content')
 <section class="d-flex justify-content-center" style="height: 90vh;">
-    <div class="card m-5" style="width: 80vw;">
+    <div class="card-div m-5" style="width: 80vw;">
         <div class="d-flex justify-content-between">
-            <h3 class="mx-5 my-4 title-color">Cobranças</h3>
+            <h3 class="my-4 mx-3 title-color">Cobranças</h3>
             <a href="{{ route('contrato.create') }}">
-                <button class="btn btn-btn-create mx-5 my-4" type="submit">+ EMITIR COBRANÇA</button>
+                <button class="btn btn-create my-4 mx-3" type="submit">+ EMITIR COBRANÇA</button>
             </a>
         </div>
         <div class="scrollable-container m-3">
@@ -29,22 +29,43 @@
                                 {{ $contrato->contrato_id }}
                             </td>
                             <td>
-                                {{ $contrato->cliente_id }}
+                                {{ $contrato->cliente->cli_nome_fantasia }}
                             </td>
                             <td>
                                 {{ $contrato->ctr_descricao }}
                             </td>
                             <td>
-                                {{ $contrato->ctr_periodicidade }}
+                                @if($contrato->ctr_periodicidade == 0)
+                                    Vendas (Cobrança única)
+                                @elseif($contrato->ctr_periodicidade == 1)
+                                    Mensal
+                                @elseif($contrato->ctr_periodicidade == 2)
+                                    Bimestral
+                                @elseif($contrato->ctr_periodicidade == 3)
+                                    Trimestral
+                                @elseif($contrato->ctr_periodicidade == 4)
+                                    Quadrimestral
+                                @elseif($contrato->ctr_periodicidade == 6)
+                                    Semestral
+                                @elseif($contrato->ctr_periodicidade == 12)
+                                    Anual
+                                @endif
                             </td>
                             <td>
-                                {{ $contrato->ctr_data_renovacao }}
+                                @if ($contrato->ctr_data_renovacao)
+
+                                {{ date("d/m/Y", strtotime($contrato->ctr_data_renovacao)) }}
+                                @endif
                             </td>
                             <td>
-                                {{ $contrato->ctr_ativo }}
+                                @if($contrato->ctr_ativo == 's')
+                                    Sim
+                                @elseif($contrato->ctr_ativo == 'n')
+                                    Não
+                                @endif
                             </td>
                             <td>
-                                {{ $contrato->ctr_valor }}
+                                R$ {{ number_format($contrato->ctr_valor, 2, ',', '.') }}
                             </td>
                             </td>
                             <td>
@@ -88,23 +109,29 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var deleteForm;
-        var deleteButtons = document.querySelectorAll('.delete-btn');
+        let deleteForm;
+        let deleteButtons = document.querySelectorAll('.delete-btn');
 
         deleteButtons.forEach(function (button) {
             button.addEventListener('click', function (event) {
-                event.preventDefault();
+                event.preventDefault()
                 deleteForm = button.closest('form');
-                var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                deleteModal.show();
+                let deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+                deleteModal.show()
             });
         });
 
         document.getElementById('confirmDelete').addEventListener('click', function () {
             if (deleteForm) {
-                deleteForm.submit();
+                deleteForm.submit()
             }
-        });
-    });
+        })
+    })
+
+    @if (session('success'))
+        $(document).ready(function(){
+            toastr.success("{{ session('success') }}")
+        })
+    @endif
 </script>
 @endsection

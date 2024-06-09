@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cliente;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Boleto;
 
@@ -38,6 +39,9 @@ class BoletoController extends Controller
     public function edit(string $id)
     {
         $boleto = $this->boleto->with('contrato.cliente')->find($id);
+        $boleto->blt_data_vencimento =
+            $boleto->blt_data_vencimento ? Carbon::createFromFormat('Y-m-d', $boleto->blt_data_vencimento)->format('d/m/Y') : null;
+        $boleto->blt_valor = $boleto->blt_valor ? number_format($boleto->blt_valor, 2, ',', '.') : null;
         return view('boleto.boleto_update', ['boleto' => $boleto]);
     }
 
@@ -49,8 +53,7 @@ class BoletoController extends Controller
         }
 
         $request->validate([
-            'contrato_id' => 'required|integer',
-            'blt_data_vencimento' => 'required|date',
+            'blt_data_vencimento' => 'nullable|date_format:d/m/Y',
             'blt_valor' => 'required',
             'blt_valor_pago' => 'nullable',
             'blt_taxa' => 'nullable',
@@ -62,9 +65,7 @@ class BoletoController extends Controller
             'blt_multa' => 'nullable',
             'blt_data_pago' => 'nullable|date',
             'blt_valor_tarifa' => 'nullable',
-            'blt_qtd_parcelas' => 'required|integer',
             'lote_id' => 'nullable|integer',
-            'blt_registrado' => 'nullable',
             'remessa_id' => 'nullable|integer',
             'blt_erro_registro' => 'nullable',
             'blt_zoop_id' => 'nullable|string|max:100',
@@ -74,30 +75,26 @@ class BoletoController extends Controller
             'blt_webhook_log' => 'nullable|string',
             'blt_numero_nfse' => 'nullable|string|max:50',
             'blt_erro_nota' => 'nullable',
-            'forma_pagamento_id' => 'nullable|integer',
             'blt_vencimento_original' => 'nullable|date',
             'excluido' => 'nullable|date',
             'cadastrado' => 'nullable|date',
             'atualizado' => 'nullable|date'
         ]);
 
-        $this->boleto->create([
-            'contrato_id' => $request->contrato_id,
-            'blt_data_vencimento' => $request->blt_data_vencimento,
-            'blt_valor' => $request->blt_valor,
+       $boleto->update([
+            'blt_data_vencimento' => $request->blt_data_vencimento ? Carbon::createFromFormat('d/m/Y', $request->blt_data_vencimento)->format('Y-m-d') : null,
+            'blt_valor' => $request->blt_valor ? str_replace(['.', ','], ['', '.'], $request->blt_valor) : null,
             'blt_valor_pago' => $request->blt_valor_pago,
-            'blt_taxa' => $request->blt_taxa,
+            'blt_taxa' => $request->blt_taxa ? str_replace(['.', ','], ['', '.'], $request->blt_taxa) : null,
             'blt_descricao' => $request->blt_descricao,
             'blt_observacao' => $request->blt_observacao,
             'blt_chave' => $request->blt_chave,
-            'blt_desconto' => $request->blt_desconto,
-            'blt_juros' => $request->blt_juros,
-            'blt_multa' => $request->blt_multa,
+            'blt_desconto' => $request->blt_desconto ? str_replace(['.', ','], ['', '.'], $request->blt_desconto) : null,
+            'blt_juros' => $request->blt_juros ? str_replace(['.', ','], ['', '.'], $request->blt_juros) : null,
+            'blt_multa' => $request->blt_multa ? str_replace(['.', ','], ['', '.'], $request->blt_multa) : null,
             'blt_data_pago' => $request->blt_data_pago,
             'blt_valor_tarifa' => $request->blt_valor_tarifa,
-            'blt_qtd_parcelas' => $request->blt_qtd_parcelas,
             'lote_id' => $request->lote_id,
-            'blt_registrado' => $request->blt_registrado,
             'remessa_id' => $request->remessa_id,
             'blt_erro_registro' => $request->blt_erro_registro,
             'blt_zoop_id' => $request->blt_zoop_id,
@@ -107,10 +104,9 @@ class BoletoController extends Controller
             'blt_webhook_log' => $request->blt_webhook_log,
             'blt_numero_nfse' => $request->blt_numero_nfse,
             'blt_erro_nota' => $request->blt_erro_nota,
-            'forma_pagamento_id' => $request->forma_pagamento_id,
             'blt_vencimento_original' => $request->blt_vencimento_original
         ]);
-        return response()->json($boleto);
+        return redirect()->route('boleto.index')->with('message', 'Criado com sucesso!');
     }
 
     public function destroy(string $id)

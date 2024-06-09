@@ -2,16 +2,23 @@
 @section('auth.content')
 <form action="{{ route('cliente.store') }}"  method="post">
     @csrf
-    <div class="d-flex justify-content-center">
-        <div class="card m-5" style="width: 50vw;">
+    <section class="d-flex justify-content-center">
+        <div class="card-div m-5" style="width: 50vw;">
+            <h2 class="my-3 title-color">Dados do Cliente</h2>
             <div class="mb-3">
                 <input type="text" placeholder="CPF/CNPJ" name="cli_cpf_cnpj" class="form-control">
+                @if($errors->has('cli_cpf_cnpj'))
+                    <small class="error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3">
                 <input type="text" placeholder="Razão Social" name="cli_empresa" class="form-control">
             </div>
             <div class="mb-3">
                 <input type="text" placeholder="Nome fantasia" name="cli_nome_fantasia" class="form-control">
+                @if($errors->has('cli_nome_fantasia'))
+                    <small class="error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3">
                 <input type="text" placeholder="Responsável" name="cli_responsavel" class="form-control">
@@ -28,9 +35,9 @@
             <div class="mb-3">
                 <input type="text" placeholder="Celular" name="cli_celular" class="form-control">
             </div>
-            Endereço
+            <hr class="hr-text" data-content="ENDEREÇO">
             <div class="mb-3">
-                <input type="text" placeholder="CEP" name="cli_cep" class="form-control">
+                <input type="text" id="cep" placeholder="CEP" name="cli_cep" class="form-control">
             </div>
             <div class="mb-3">
                 <input type="text" placeholder="Logradouro" name="cli_endereco" class="form-control">
@@ -57,7 +64,7 @@
                     <option disabled selected>Selecione primeiro o estado</option>
                 </select>
             </div>
-            Informações complementares
+            <hr class="hr-text" data-content="INFORMAÇÕES COMPLEMENTARES">
             <div class="mb-3">
                 <input type="text" placeholder="E-mail Corporativo" name="cli_email_corporativo" class="form-control">
             </div>
@@ -67,9 +74,26 @@
             <div class="mb-3">
                 <textarea name="cli_anotacao" class="form-control" placeholder="Anotações"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="d-flex mb-3">
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="cliente_ativo" value="S" id="cliente_ativo" checked="checked">
+                    <label class="form-check-label" for="cliente_ativo">
+                        Ativo
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cliente_ativo" value="N" id="cliente_ativo">
+                    <label class="form-check-label" for="cliente_ativo">
+                        Bloqueado
+                    </label>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">SALVAR</button>
+                <a href="{{ route('cliente.index') }}">VOLTAR</a>
+            </div>
         </div>
-    </div>
+    </section>
 </form>
 
 <script>
@@ -90,5 +114,15 @@
             municipioSelect.innerHTML = '<option disabled selected>Selecione primeiro o estado</option>'
         }
     }
+
+
+    $(document).ready(function(){
+        $('#cep').mask('00000-000')
+    })
+    @if (session('success'))
+        $(document).ready(function(){
+            toastr.success("{{ session('success') }}")
+        })
+    @endif
 </script>
 @endsection

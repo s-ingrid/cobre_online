@@ -10,10 +10,10 @@
             <a style="color: white;" class="nav-link active" href="{{ route ('cliente.index') }}">Clientes</a>
         </li>
         <li class="nav-item">
-            <a style="color: white;" class="nav-link" href="{{ route ('boleto.index') }}">Boletos</a>
+            <a style="color: white;" class="nav-link" href="{{ route ('contrato.index') }}">Vendas/Contratos</a>
         </li>
         <li class="nav-item">
-            <a style="color: white;" class="nav-link" href="{{ route ('contrato.index') }}">Vendas/Contratos</a>
+            <a style="color: white;" class="nav-link" href="{{ route ('boleto.index') }}">Boletos</a>
         </li>
       </ul>
       <span class="navbar-text">

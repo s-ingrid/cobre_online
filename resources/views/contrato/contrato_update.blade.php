@@ -4,7 +4,7 @@
     @csrf
     @method('PUT')
     <section class="d-flex justify-content-center">
-        <div class="card m-5" style="width: 65vw;">
+        <div class="card-div m-5" style="width: 65vw;">
             <h2 class="mx-5 mt-5 title-color">Dados da Cobrança</h2>
             <nav class="tipo-cobranca-list my-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -15,8 +15,9 @@
                 </ol>
             </nav>
             <div id="periodicidadeList" class="periodicidade-list mx-5 mb-4">
-                <label class="periodicidade-item selected">
-                    <input class="radio-input" type="radio" name="ctr_periodicidade" value="1" checked="">Mensal</label>
+                <input type="hidden" name="ctr_periodicidade" id="ctr_periodicidade" value="0">
+                <label class="periodicidade-item">
+                    <input class="radio-input" type="radio" name="ctr_periodicidade" value="1">Mensal</label>
                 <label class="periodicidade-item">
                     <input class="radio-input" type="radio" name="ctr_periodicidade" value="2">Bimestral</label>
                 <label class="periodicidade-item">
@@ -38,6 +39,9 @@
                         <option value="{{ $cliente->cliente_id }}" {{ $cliente->cliente_id == $contrato->cliente_id ? 'selected' : '' }}>{{ $cliente->cli_nome_fantasia }}</option>
                     @endforeach
                 </select>
+                @if($errors->has('cliente_id'))
+                    <small class="error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Descrição (produto ou serviço)" name="ctr_descricao" value="{{ $contrato->ctr_descricao }}" class="form-control">
@@ -54,12 +58,21 @@
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Valor" name="ctr_valor" value="{{ $contrato->ctr_valor }}" class="form-control moeda">
+                @if($errors->has('ctr_valor'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Parcelas (boletos)" name="ctr_parcelamento" value="{{ $contrato->ctr_parcelamento }}" class="form-control">
+                @if($errors->has('ctr_parcelamento'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
-                <input type="text" placeholder="Vencimento" name="ctr_data_vencimento" value="{{ $contrato->ctr_data_vencimento }}" class="form-control">
+                <input id="datepickervcmtupdate" type="text" placeholder="Vencimento" name="ctr_data_vencimento" value="{{ $contrato->ctr_data_vencimento }}" class="form-control">
+                @if($errors->has('ctr_data_vencimento'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
                 <select name="conta_id" class="form-select" value="{{ $contrato->conta_id }}">
@@ -77,8 +90,7 @@
                     @endforeach
                 </select>
             </div>
-            <hr>
-            <h5 class="mx-5">Parâmetros</h5>
+            <hr class="hr-text" data-content="PARÂMETROS">
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Desconto até o vencimento" name="ctr_desconto"
                     value="{{ $contrato->ctr_desconto }}" class="form-control moeda">
@@ -183,41 +195,43 @@
             </div>
             <div class="mx-5">
                 <input type="hidden" name="ctr_emitir_nfse" value="n">
-                <input class="form-check-input me-2" value="{{ $contrato->ctr_emitir_nfse }}" name="ctr_emitir_nfse" type="checkbox" id="emitir_nfse">
+                <input class="form-check-input me-2" value="s" name="ctr_emitir_nfse" type="checkbox" id="emitir_nfse">
                 <label class="form-check-label" for="emitir_nfse">Emitir NFS-e</label>
             </div>
             <div id="div_emiti_nfse">
                 <div class="d-flex mx-5">
                     <div class="mt-3 me-3">
-                        <select name="nfse_codigo_servico_id" class="form-select" value="{{ $contrato->nfse_codigo_servico_id }}">
+                        <select name="nfse_codigo_servico_id" class="form-select">
                             <option disabled selected>Código de serviço</option>
                             @foreach ($nfses as $nfse)
-                                <option value="{{ $nfse->nfse_codigo_servico_id }}" {{ $nfse->nfse_codigo_servico_id == $contrato->nfse_codigo_servico_id ? 'selected' : '' }}>{{ $nfse->nfc_codigo }} -
+                                <option value="{{ $nfse->nfse_codigo_servico_id }}">{{ $nfse->nfc_codigo }} -
                                     {{ $nfse->nfc_nome }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mt-3">
-                        <input value="{{ $contrato->ctr_retencao }}" class="form-control moeda " placeholder="Retenção" type="text" name="ctr_retencao" min-value="1" value="0,00">
+                        <input class="form-control moeda " placeholder="Retenção" type="text" name="ctr_retencao" min-value="1" value="0,00">
                     </div>
                 </div>
                 <div class="mt-3 m-3 mx-5">
-                    <textarea name="ctr_nfe_mensagem" value="{{ $contrato->ctr_nfe_mensagem }}" class="form-control" placeholder="Descrição da NFS-e"></textarea>
+                    <textarea name="ctr_nfe_mensagem" class="form-control" placeholder="Descrição da NFS-e"></textarea>
                 </div>
                 <div class="m-3 mx-5">
                     <p><small>Você pode utilizar #MES_ANTERIOR# e #MES_ATUAL# para substituir os valores</small></p>
                     <span>Momento da emissão da NFS-E:</span>
                     <div class="d-flex">
                         <div class="form-check me-3">
-                            <input class="form-check-input" type="radio" name="ctr_emitir_nfse_antes_quitacao" value="{{ $nfse->ctr_emitir_nfse_antes_quitacao }}"
+                            <input class="form-check-input" type="radio" name="ctr_emitir_nfse_antes_quitacao"
+                            value="{{ $nfse->ctr_emitir_nfse_antes_quitacao ? $nfse->ctr_emitir_nfse_antes_quitacao : 'S' }}"
                                 id="emitir_nfse_antes_quitacao" checked="checked">
                             <label class="form-check-label" for="emitir_nfse_antes_quitacao">
                                 Antes da Quitação
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="ctr_emitir_nfse_antes_quitacao" value="{{ $nfse->ctr_emitir_nfse_antes_quitacao }}"
+                            <input class="form-check-input" type="radio" name="ctr_emitir_nfse_antes_quitacao"
+                                value="{{ $nfse->ctr_emitir_nfse_antes_quitacao ? $nfse->ctr_emitir_nfse_antes_quitacao : 'N' }}"
                                 id="emitir_nfse_depois_quitacao">
                             <label class="form-check-label" for="emitir_nfse_depois_quitacao">
                                 Após da Quitação
@@ -227,15 +241,15 @@
                 </div>
             </div>
             <div class="mt-3 mx-5">
-                <input value="{{ $contrato->ctr_data_renovacao }}" class="form-control" placeholder="Renovado em" type="text" name="ctr_data_renovacao">
+                <input id="datepickerrenvupdate" value="{{ $contrato->ctr_data_renovacao }}" class="form-control" placeholder="Renovado em" type="text" name="ctr_data_renovacao">
             </div>
             <div class="my-3 mx-5">
                 <input value="{{ $contrato->ctr_observacao_interna }}" class="form-control moeda" placeholder="Observação interna" type="text"
                     name="ctr_observacao_interna">
             </div>
-            <div class="d-flex justify-content-between mx-5 my-3">
-                <button type="submit" class="btn btn-primary">SALVAR E GERAR FATURA</button>
-                <button type="submit" class="btn">VOLTAR</button>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary ms-5">SALVAR E ATUALIZAR FATURA</button>
+                <a class="me-5" href="{{ route('contrato.index') }}">VOLTAR</a>
             </div>
         </div>
     </section>
@@ -287,11 +301,12 @@
     })
     function changeCobranca(c) {
         const periodicidadeList = document.getElementById('periodicidadeList')
+        const ctrPeriodicidade = document.getElementById('ctr_periodicidade')
         const periodicidadeItem = document.querySelectorAll('.breadcrumb-item a')
         if (c === 'recorrente') {
-            periodicidadeList.style.display = 'grid';
+            periodicidadeList.style.display = 'grid'
         } else {
-            periodicidadeList.style.display = 'none';
+            periodicidadeList.style.display = 'none'
         }
         periodicidadeItem.forEach(item => {
             item.classList.remove('tipo-cobranca-active')
@@ -299,7 +314,32 @@
                 (c === 'unica' && item.textContent.includes('Venda'))) {
                 item.classList.add('tipo-cobranca-active')
             }
-        });
+        })
     }
+    $(function() {
+        $("#datepickervcmtupdate").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        })
+    })
+    $(function() {
+        $("#datepickerrenvupdate").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        })
+
+        let today = new Date()
+        let day = String(today.getDate()).padStart(2, '0')
+        let month = String(today.getMonth() + 1).padStart(2, '0')
+        let year = today.getFullYear()
+        let formattedDate = day + '/' + month + '/' + year
+
+        $("#datepickerrenv").datepicker('update', formattedDate)
+    })
+    @if (session('success'))
+        $(document).ready(function(){
+            toastr.success("{{ session('success') }}")
+        })
+    @endif
 </script>
 @endsection

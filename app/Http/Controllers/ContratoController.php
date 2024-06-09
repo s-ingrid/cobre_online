@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use App\Models\Contrato;
 use App\Models\Cliente;
 use App\Models\Conta;
-use App\Http\Controllers\BoletoController;
 use Illuminate\Support\Facades\DB;
 
 class ContratoController extends Controller
@@ -28,7 +27,7 @@ class ContratoController extends Controller
 
     public function index()
     {
-        $contratos = $this->contrato->all();
+        $contratos = $this->contrato->with('cliente')->get();
         return view('contrato.contrato', ['contratos' => $contratos]);
     }
 
@@ -62,14 +61,14 @@ class ContratoController extends Controller
             'ctr_juros' => 'nullable',
             'ctr_multa' => 'nullable',
             'ctr_desconto' => 'nullable',
-            'ctr_valor' => 'nullable',
-            'ctr_data_vencimento' => 'nullable|date',
+            'ctr_valor' => 'required',
+            'ctr_data_vencimento' => 'nullable|date_format:d/m/Y',
             'ctr_descricao' => 'nullable|string|max:255',
             'ctr_instrucao' => 'nullable|string|max:255',
             'ctr_observacao' => 'nullable|string|max:255',
             'ctr_parcelamento' => 'required|integer',
             'ctr_ativo' => 'required',
-            'ctr_data_renovacao' => 'nullable|date',
+            'ctr_data_renovacao' => 'nullable|date_format:d/m/Y',
             'ctr_valor_desconto' => 'nullable',
             'ctr_cartao' => 'nullable',
             'ctr_pix' => 'required',
@@ -109,13 +108,13 @@ class ContratoController extends Controller
                 'ctr_multa' => $request->ctr_multa ? str_replace(['.', ','], ['', '.'], $request->ctr_multa) : null,
                 'ctr_desconto' => $request->ctr_desconto ? str_replace(['.', ','], ['', '.'], $request->ctr_desconto) : null,
                 'ctr_valor' => $request->ctr_valor ? str_replace(['.', ','], ['', '.'], $request->ctr_valor) : null,
-                'ctr_data_vencimento' => $request->ctr_data_vencimento,
+                'ctr_data_vencimento' => $request->ctr_data_vencimento ? Carbon::createFromFormat('d/m/Y', $request->ctr_data_vencimento)->format('Y-m-d') : null,
                 'ctr_descricao' => $request->ctr_descricao,
                 'ctr_instrucao' => $request->ctr_instrucao,
                 'ctr_observacao' => $request->ctr_observacao,
                 'ctr_parcelamento' => $request->ctr_parcelamento,
                 'ctr_ativo' => $request->ctr_ativo,
-                'ctr_data_renovacao' => $request->ctr_data_renovacao,
+                'ctr_data_renovacao' => $request->ctr_data_renovacao ? Carbon::createFromFormat('d/m/Y', $request->ctr_data_renovacao )->format('Y-m-d') : null,
                 'ctr_valor_desconto' => $request->ctr_valor_desconto,
                 'ctr_cartao' => $request->ctr_cartao,
                 'ctr_pix' => $request->ctr_pix,
@@ -139,6 +138,7 @@ class ContratoController extends Controller
             ]);
 
             if (!$contrato) {
+                toastr()->error('Erro ao criar contrato.');
                 return redirect()->back()->with('error', 'Erro ao criar contrato.');
             }
             $valorParcela = $contrato->ctr_valor / $contrato->ctr_parcelamento;
@@ -148,7 +148,7 @@ class ContratoController extends Controller
             for ($i = 0; $i < $numParcelas; $i++) {
                 $dataVencimento = Carbon::parse($dataVencimentoInicial)->addMonths($i);
                 $parcelaNumero = $i + 1;
-                $observacao = "Parcela $parcelaNumero de $numParcelas";
+                $observacao = "Parcela $parcelaNumero de $numParcelas.";
 
                 $this->boleto->create([
                     'contrato_id' => $contrato->contrato_id,
@@ -158,11 +158,13 @@ class ContratoController extends Controller
                     'blt_descricao' => $contrato->ctr_descricao,
                     'blt_observacao' => $observacao,
                     'blt_desconto' => $contrato->ctr_desconto,
-                    'blt_qtd_parcelas' => $numParcelas
+                    'blt_qtd_parcelas' => $numParcelas,
+                    'blt_vencimento_original' => $dataVencimentoInicial
                 ]);
             }
 
             DB::commit();
+            toastr()->success('Criado com sucesso!');
             return redirect()->route('contrato.index')->with('message', 'Criado com sucesso!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -173,6 +175,11 @@ class ContratoController extends Controller
     public function edit(string $id)
     {
         $contrato = $this->contrato->find($id);
+        $contrato->ctr_data_vencimento =
+            $contrato->ctr_data_vencimento ? Carbon::createFromFormat('Y-m-d', $contrato->ctr_data_vencimento)->format('d/m/Y') : null;
+        $contrato->ctr_data_renovacao =
+            $contrato->ctr_data_renovacao ? Carbon::createFromFormat('Y-m-d', $contrato->ctr_data_renovacao)->format('d/m/Y') : null;
+        $contrato->ctr_valor = $contrato->ctr_valor ? number_format($contrato->ctr_valor, 2, ',', '.') : null;
         $clientes = Cliente::all();
         $lancamentos_categoria = Lancamento_categoria::all();
         $contas = Conta::all();
@@ -193,6 +200,7 @@ class ContratoController extends Controller
         $contrato = $this->contrato->find($id);
 
         if (!$contrato) {
+            toastr()->error('Contrato não encontrado');
             return response()->json(['message' => 'Contrato não encontrado'], 404);
         }
 
@@ -208,14 +216,14 @@ class ContratoController extends Controller
             'ctr_juros' => 'nullable',
             'ctr_multa' => 'nullable',
             'ctr_desconto' => 'nullable',
-            'ctr_valor' => 'nullable',
-            'ctr_data_vencimento' => 'nullable|date',
+            'ctr_valor' => 'required',
+            'ctr_data_vencimento' => 'required|date_format:d/m/Y',
             'ctr_descricao' => 'nullable|string|max:255',
             'ctr_instrucao' => 'nullable|string|max:255',
             'ctr_observacao' => 'nullable|string|max:255',
             'ctr_parcelamento' => 'required|integer',
             'ctr_ativo' => 'required',
-            'ctr_data_renovacao' => 'nullable|date',
+            'ctr_data_renovacao' => 'nullable|date_format:d/m/Y',
             'ctr_valor_desconto' => 'nullable',
             'ctr_cartao' => 'nullable',
             'ctr_pix' => 'required',
@@ -255,13 +263,13 @@ class ContratoController extends Controller
                 'ctr_multa' => $request->ctr_multa ? str_replace(['.', ','], ['', '.'], $request->ctr_multa) : null,
                 'ctr_desconto' => $request->ctr_desconto ? str_replace(['.', ','], ['', '.'], $request->ctr_desconto) : null,
                 'ctr_valor' => $request->ctr_valor ? str_replace(['.', ','], ['', '.'], $request->ctr_valor) : null,
-                'ctr_data_vencimento' => $request->ctr_data_vencimento,
+                'ctr_data_vencimento' => $request->ctr_data_vencimento ? Carbon::createFromFormat('d/m/Y', $request->ctr_data_vencimento)->format('Y-m-d') : null,
                 'ctr_descricao' => $request->ctr_descricao,
                 'ctr_instrucao' => $request->ctr_instrucao,
                 'ctr_observacao' => $request->ctr_observacao,
                 'ctr_parcelamento' => $request->ctr_parcelamento,
                 'ctr_ativo' => $request->ctr_ativo,
-                'ctr_data_renovacao' => $request->ctr_data_renovacao,
+                'ctr_data_renovacao' => $request->ctr_data_renovacao ? Carbon::createFromFormat('d/m/Y', $request->ctr_data_renovacao )->format('Y-m-d') : null,
                 'ctr_valor_desconto' => $request->ctr_valor_desconto,
                 'ctr_cartao' => $request->ctr_cartao,
                 'ctr_pix' => $request->ctr_pix,
@@ -322,15 +330,19 @@ class ContratoController extends Controller
                         'blt_descricao' => $contrato->ctr_descricao,
                         'blt_observacao' => $observacao,
                         'blt_desconto' => $contrato->ctr_desconto,
-                        'blt_qtd_parcelas' => $numParcelas
+                        'blt_qtd_parcelas' => $numParcelas,
+                        'blt_vencimento_original' => $dataVencimentoInicial
                     ]);
                 }
             }
 
             DB::commit();
+            toastr()->success('Atualizado com sucesso!');
             return redirect()->route('boleto.index')->with('message', 'Criado com sucesso!');
+
         } catch (\Exception $e) {
             DB::rollBack();
+            toastr()->error('Ocorreu um erro ao criar.');
             return back()->withErrors(['error' => 'Ocorreu um erro ao criar o contrato e os boletos.'])->withInput();
         }
     }
@@ -339,10 +351,12 @@ class ContratoController extends Controller
     {
         $contrato = $this->contrato->find($id);
         if (!$contrato) {
+            toastr()->error('Contrato não encontrado.');
             return response()->json(['message' => 'Contrato não encontrado'], 404);
         }
 
         $contrato->delete();
+        toastr()->success('Removido com sucesso!');
         return redirect()->route('contrato.index')->with('message', 'Deletado com sucesso!');
     }
 }

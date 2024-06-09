@@ -32,7 +32,7 @@ class ClienteController extends Controller
         $request->validate([
             'estado_id' => 'nullable|size:2',
             'municipio_id' => 'nullable|integer',
-            'cli_empresa' => 'required|string|max:255',
+            'cli_empresa' => 'nullable|string|max:255',
             'cli_nome_fantasia' => 'required|string|max:255',
             'cli_responsavel' => 'nullable|string|max:255',
             'cli_cpf_cnpj' => 'required|string|max:255',
@@ -87,7 +87,7 @@ class ClienteController extends Controller
             'cli_inscricao_municipal' => $request->cli_inscricao_municipal,
             'cli_sku' => $request->cli_sku,
         ]);
-
+        toastr()->success('Criado com sucesso!');
         return redirect()->route('cliente.index')->with('message', 'Criado com sucesso!');
     }
 
@@ -109,6 +109,7 @@ class ClienteController extends Controller
         $cliente = $this->cliente->find($id);
 
         if (!$cliente) {
+            toastr()->error('Cliente não encontrado.');
             return response()->json(['message' => 'Cliente não encontrado'], 404);
         }
 
@@ -170,7 +171,7 @@ class ClienteController extends Controller
             'cli_inscricao_municipal' => $request->cli_inscricao_municipal,
             'cli_sku' => $request->cli_sku,
         ]);
-
+        toastr()->success('Atualizado com sucesso!');
         return redirect()->route('cliente.index')->with('message', 'Atualizado com sucesso!');
     }
 
@@ -178,10 +179,12 @@ class ClienteController extends Controller
     {
         $cliente = $this->cliente->find($id);
         if (!$cliente) {
+            toastr()->error('Cliente não encontrado.');
             return response()->json(['message' => 'Cliente não encontrado'], 404);
         }
 
         $cliente->delete();
+        toastr()->success('Removido com sucesso!');
         return redirect()->route('cliente.index')->with('message', 'Deletado com sucesso!');
     }
 }

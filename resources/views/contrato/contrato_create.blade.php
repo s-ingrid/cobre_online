@@ -3,7 +3,7 @@
 <form action="{{ route('contrato.store') }}" method="post">
     @csrf
     <section class="d-flex justify-content-center">
-        <div class="card m-5" style="width: 65vw;">
+        <div class="card-div m-5" style="width: 50vw;">
             <h2 class="mx-5 mt-5 title-color">Dados da Cobrança</h2>
             <nav class="tipo-cobranca-list my-3" aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -14,8 +14,9 @@
                 </ol>
             </nav>
             <div id="periodicidadeList" class="periodicidade-list mx-5 mb-4">
-                <label class="periodicidade-item selected">
-                    <input class="radio-input" type="radio" name="ctr_periodicidade" value="1" checked="">Mensal</label>
+                <input type="hidden" name="ctr_periodicidade" id="ctr_periodicidade" value="0">
+                <label class="periodicidade-item">
+                    <input class="radio-input" type="radio" name="ctr_periodicidade" value="1">Mensal</label>
                 <label class="periodicidade-item">
                     <input class="radio-input" type="radio" name="ctr_periodicidade" value="2">Bimestral</label>
                 <label class="periodicidade-item">
@@ -36,7 +37,10 @@
                     @foreach ($clientes as $cliente)
                         <option value="{{ $cliente->cliente_id }}">{{ $cliente->cli_nome_fantasia }}</option>
                     @endforeach
-                </select>
+                    </select>
+                    @if($errors->has('cliente_id'))
+                        <small class="error">Preenchimento obrigatório</small>
+                    @endif
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Descrição (produto ou serviço)" name="ctr_descricao"
@@ -54,12 +58,21 @@
             </div>
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Valor" name="ctr_valor" class="form-control moeda">
+                @if($errors->has('ctr_valor'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
-                <input type="text" placeholder="Parcelas (boletos)" name="ctr_parcelamento" class="form-control">
+                <input value="1" type="text" placeholder="Parcelas (boletos)" name="ctr_parcelamento" class="form-control">
+                @if($errors->has('ctr_parcelamento'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
-                <input type="text" placeholder="Vencimento" name="ctr_data_vencimento" class="form-control">
+                <input type="text" id="datepickervcmt" placeholder="Vencimento" name="ctr_data_vencimento" class="form-control">
+                @if($errors->has('ctr_data_vencimento'))
+                    <small class="me-1 error">Preenchimento obrigatório</small>
+                @endif
             </div>
             <div class="mb-3 mx-5">
                 <select name="conta_id" class="form-select">
@@ -77,8 +90,7 @@
                     @endforeach
                 </select>
             </div>
-            <hr>
-            <h5 class="mx-5">Parâmetros</h5>
+            <hr class="hr-text" data-content="PARÂMETROS">
             <div class="mb-3 mx-5">
                 <input type="text" placeholder="Desconto até o vencimento" name="ctr_desconto"
                     class="form-control moeda">
@@ -227,15 +239,15 @@
                 </div>
             </div>
             <div class="mt-3 mx-5">
-                <input class="form-control" placeholder="Renovado em" type="text" name="ctr_data_renovacao">
+                <input id="datepickerrenv" class="form-control" placeholder="Renovado em" type="text" name="ctr_data_renovacao">
             </div>
             <div class="my-3 mx-5">
                 <input class="form-control" placeholder="Observação interna" type="text"
                     name="ctr_observacao_interna">
             </div>
-            <div class="d-flex justify-content-between mx-5 my-3">
-                <button type="submit" class="btn btn-primary">SALVAR E GERAR FATURA</button>
-                <button class="btn">VOLTAR</button>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary ms-5">SALVAR E GERAR FATURA</button>
+                <a class="me-5" href="{{ route('cliente.index') }}">VOLTAR</a>
             </div>
         </div>
     </section>
@@ -287,11 +299,13 @@
     })
     function changeCobranca(c) {
         const periodicidadeList = document.getElementById('periodicidadeList')
+        const ctrPeriodicidade = document.getElementById('ctr_periodicidade')
         const periodicidadeItem = document.querySelectorAll('.breadcrumb-item a')
         if (c === 'recorrente') {
-            periodicidadeList.style.display = 'grid';
+            periodicidadeList.style.display = 'grid'
         } else {
-            periodicidadeList.style.display = 'none';
+            ctrPeriodicidade.value = 0
+            periodicidadeList.style.display = 'none'
         }
         periodicidadeItem.forEach(item => {
             item.classList.remove('tipo-cobranca-active')
@@ -299,7 +313,32 @@
                 (c === 'unica' && item.textContent.includes('Venda'))) {
                 item.classList.add('tipo-cobranca-active')
             }
-        });
+        })
     }
+    $(function() {
+        $("#datepickervcmt").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        })
+    })
+    $(function() {
+        $("#datepickerrenv").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        })
+
+        let today = new Date()
+        let day = String(today.getDate()).padStart(2, '0')
+        let month = String(today.getMonth() + 1).padStart(2, '0')
+        let year = today.getFullYear()
+        let formattedDate = day + '/' + month + '/' + year
+
+        $("#datepickerrenv").datepicker('update', formattedDate)
+    })
+    @if (session('success'))
+        $(document).ready(function(){
+            toastr.success("{{ session('success') }}")
+        })
+    @endif
 </script>
 @endsection

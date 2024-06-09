@@ -1,15 +1,14 @@
 @extends('auth.layout')
 @section('auth.content')
 <section class="d-flex justify-content-center" style="height: 90vh;">
-    <div class="card m-5" style="width: 80vw;">
+    <div class="card-div m-5" style="width: 80vw;">
         <div class="d-flex justify-content-between">
-            <h3 class="mx-5 my-4 title-color">Boletos</h3>
+            <h3 class="my-4 mx-3 title-color">Boletos</h3>
             <a href="{{ route('contrato.create') }}">
-                <button class="btn btn-create mx-5 my-4" type="submit">+ EMITIR COBRANÇA</button>
+                <button class="btn btn-create my-4 mx-3" type="submit">+ EMITIR COBRANÇA</button>
             </a>
         </div>
         <div class="scrollable-container m-3">
-
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -26,14 +25,19 @@
                                 {{ $boleto->boleto_id }}
                                 {{$boleto->contrato->cliente->cli_nome_fantasia}}
                                 @if($boleto->contrato->cliente->cli_responsavel)
-                                    ({{$boleto->contrato->cliente->cli_responsavel}})
+                                    ({{$boleto->contrato->cliente->cli_responsavel}})<br/>
+                                @endif
+                                <small>{{$boleto->contrato->cliente->cli_telefone}}</small><br/>
+                                <small>{{$boleto->contrato->cliente->cli_email}}</small><br/>
+                                <small>{{$boleto->contrato->ctr_descricao}}</small><br/>
+                            </td>
+                            <td>
+                                @if ($boleto->blt_data_vencimento)
+                                    <span class="d-flex align-items-center">{{ date("d/m/Y", strtotime($boleto->blt_data_vencimento)) }}</span>
                                 @endif
                             </td>
                             <td>
-                                {{ $boleto->blt_data_vencimento }}
-                            </td>
-                            <td>
-                                {{ $boleto->blt_valor }}
+                                R$ {{ number_format($boleto->blt_valor, 2, ',', '.') }}
                             </td>
                             <td>
                                 <div class="d-flex">
@@ -76,23 +80,29 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var deleteForm;
-        var deleteButtons = document.querySelectorAll('.delete-btn');
+        let deleteForm
+        let deleteButtons = document.querySelectorAll('.delete-btn')
 
         deleteButtons.forEach(function (button) {
             button.addEventListener('click', function (event) {
-                event.preventDefault();
-                deleteForm = button.closest('form');
-                var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                deleteModal.show();
-            });
-        });
+                event.preventDefault()
+                deleteForm = button.closest('form')
+                let deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+                deleteModal.show()
+            })
+        })
 
         document.getElementById('confirmDelete').addEventListener('click', function () {
             if (deleteForm) {
-                deleteForm.submit();
+                deleteForm.submit()
             }
-        });
-    });
+        })
+    })
+
+    @if (session('success'))
+        $(document).ready(function(){
+            toastr.success("{{ session('success') }}")
+        })
+    @endif
 </script>
 @endsection
