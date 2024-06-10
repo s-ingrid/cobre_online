@@ -178,3 +178,11 @@ small {
     background-repeat: no-repeat;
     height: 100vh;
 }
+
+.navgation {
+    color: #dce6f1 !important;
+}
+
+.navgation:hover {
+    color: #ffc10f !important;
+}

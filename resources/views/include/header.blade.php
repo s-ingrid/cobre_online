@@ -7,13 +7,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-            <a style="color: white;" class="nav-link active" href="{{ route ('cliente.index') }}">Clientes</a>
+            <a class="nav-link navgation" href="{{ route ('cliente.index') }}"><i class="bi bi-people-fill mx-1"></i>CLIENTES</a>
         </li>
         <li class="nav-item">
-            <a style="color: white;" class="nav-link" href="{{ route ('contrato.index') }}">Vendas/Contratos</a>
+            <a class="nav-link navgation" href="{{ route ('boleto.index') }}"><i class="bi bi-coin mx-1"></i>BOLETOS</a>
         </li>
         <li class="nav-item">
-            <a style="color: white;" class="nav-link" href="{{ route ('boleto.index') }}">Boletos</a>
+            <a class="nav-link navgation" href="{{ route ('contrato.index') }}"><i class="bi bi-receipt mx-1"></i>VENDAS/CONTRATOS</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link navgation" href="{{ route ('contrato.create') }}"><i class="bi bi-plus-lg mx-1"></i>EMITIR COBRANÇA</a>
         </li>
       </ul>
       <span class="navbar-text">
